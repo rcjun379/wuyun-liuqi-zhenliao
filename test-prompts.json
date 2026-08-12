@@ -1,0 +1,87 @@
+{
+  "skill": "wuyun-liuqi-zhenliao",
+  "version": "0.1.0",
+  "source_book": "五运六气学说整体蒸馏（任应秋/李阳波/田合禄/马宗素）",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "患者1984年甲子年生，今年发病，请用五运六气帮我分析他的体质禀赋和今年病情",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao, 排时相框架（甲子=土运太过/少阴司天/阳明在泉），推禀赋并判断年运影响",
+      "notes": "正面场景: 明确要求用五运六气分析体质和病情"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "帮我用伤寒钤法算一下：戊子年生人，庚辰日得病，该用什么经方？",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao, 执行钤法七步（司天→司地→司人→六经病→字号→证号→合参），戊子庚辰→肾与膀胱两感，对应方药",
+      "notes": "正面场景: 明确要求伤寒钤法归号推方"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "今年是什么运气？司天在泉是什么？主气客气怎么排？这种年份容易生什么病？",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao, 推算当年干支→中运/司天在泉/主气客气/太过不及，并给出易发疾病谱",
+      "notes": "正面场景: 询问年运格局与病谱"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "患者肝病多年，请问按照藏气法时，他的病什么时候会好转、什么时候会加重？",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao, 用藏气法时推肝病愈于夏/甚于秋/持于冬/起于春，一日平旦慧/下晡甚/夜半静",
+      "notes": "正面场景: 藏气法时预后判断"
+    },
+    {
+      "id": "should-trigger-05",
+      "type": "should_trigger",
+      "prompt": "今年是丙寅年，太阳寒水主运，少阳相火司天，厥阴风木在泉——请帮我分析这种运气格局下患者的咳嗽病机",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao, 分析丙寅年运气框架与咳嗽的病机关系（火克金等），结合客主加临判断",
+      "notes": "正面场景: 已给出干支年份与运气格局的深度分析请求"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "帮我看看这个患者的血常规化验单，白细胞偏高，是细菌感染还是病毒感染？",
+      "expected_behavior": "不应激活 wuyun-liuqi-zhenliao, 这是纯现代医学检验解读，无中医四诊与时间信息",
+      "notes": "诱饵: 纯现代医学诊疗场景"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "帮我看下我今年运势如何，什么时候能发财？",
+      "expected_behavior": "不应激活 wuyun-liuqi-zhenliao, 这是八字命理/占卜请求，skill边界明确拒绝一切命运预测用途",
+      "notes": "诱饵: 占卜算命场景（混淆测试：同用出生时间但目的不同）"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "患者胃痛泛酸，舌红苔黄，帮我开个方子",
+      "expected_behavior": "不应强行激活 wuyun-liuqi-zhenliao 的完整推演流程；仅有症状无出生/发病时间时退化为常规辨证论治，若用户后续补充时间信息才激活",
+      "notes": "诱饵: 无时间信息的普通辨证论治（无推演入口）"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "1955年脑膜炎流行，患者症状与1954年河北那批很像，要不要直接照搬苍术白虎汤？",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao 但给出边界警示: 1955乙未年金运不及/太阴司天/太阳在泉为寒湿当令，与1954甲午年燥热夹湿运气相反，不能照搬苍术白虎汤，蒲辅周改神术散——验证随机达变原则",
+      "notes": "边界: 同病异治场景，考验skill是否内置反例警示而非机械套方"
+    },
+    {
+      "id": "edge-02",
+      "type": "edge_case",
+      "prompt": "患者在西藏高原居住，按五运六气推算的发病规律准不准？",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao 并输出地域边界提示: '至高之地冬气常在'，运气框架以黄河流域为基准，高原/极北/岭南需结合实地气候校正，以四诊为准",
+      "notes": "边界: 地域差异校准场景"
+    },
+    {
+      "id": "edge-03",
+      "type": "edge_case",
+      "prompt": "给患者按伤寒钤法推出来是阳明证大承气汤，但他实际症状是发热恶寒、无汗、脉浮紧——能用大承气汤吗？",
+      "expected_behavior": "应激活 wuyun-liuqi-zhenliao 并触发四诊校验: 推演结果与症状（表证脉浮紧）不符即'方证不相应'，必须放弃推演方改用常规辨证（此处应为麻黄汤类解表），体现'干支推算须四诊印证方证相应'",
+      "notes": "边界: 推演与四诊冲突时的处理（skill安全性关键测试）"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "5条should_trigger + 3条should_not_trigger（含占卜/普通辨证诱饵）+ 3条edge_case。全部should_not_trigger必须通过，edge-01验证反例警示、edge-03验证四诊校验安全性。"
+}
